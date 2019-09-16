@@ -2,7 +2,7 @@ import numpy as np
 from itertools import product
 
 
-class DiscretizeAction():
+class ActionSpace():
     DISCRETE_VALUES = [0, 200, 360, 404, 440, 700, 900]
     ACTIONS = np.array(list(product(*((DISCRETE_VALUES,)*4))))
 
