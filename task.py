@@ -2,21 +2,15 @@ import numpy as np
 from physics_sim import PhysicsSim
 
 class Task():
-    """
-    Task (environment) that defines the goal
-    and provides feedback to the agent.
-    """
+    """Task (environment) that defines the goal and provides feedback to the agent."""
     def __init__(self, init_pose=None, init_velocities=None,
         init_angle_velocities=None, runtime=5., target_pos=None):
         """Initialize a Task object.
         Params
         ======
-            init_pose: initial position of the quadcopter in (x,y,z)
-                       dimensions and the Euler angles
-            init_velocities: initial velocity of the quadcopter in (x,y,z)
-                             dimensions
-            init_angle_velocities: initial radians/second for each of the
-                                   three Euler angles
+            init_pose: initial position of the quadcopter in (x,y,z) dimensions and the Euler angles
+            init_velocities: initial velocity of the quadcopter in (x,y,z) dimensions
+            init_angle_velocities: initial radians/second for each of the three Euler angles
             runtime: time limit for each episode
             target_pos: target/goal (x,y,z) position for the agent
         """
