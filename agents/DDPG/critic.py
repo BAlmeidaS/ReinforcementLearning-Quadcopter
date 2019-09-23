@@ -9,10 +9,10 @@ class Critic():
     def __init__(self, env, lr=0.0001, tau=0.001):
         self.env = env
 
-        self.state_size = env.observation_space.shape
-        self.action_size = env.action_space.shape
-        self.action_high = env.action_space.high
-        self.action_low = env.action_space.low
+        self.state_size = (env.state_size,)
+        self.action_size = (env.action_size,)
+        self.action_high = env.action_high
+        self.action_low = env.action_low
         self.action_range = self.action_high - self.action_low
 
         self.lr = lr

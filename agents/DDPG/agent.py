@@ -1,34 +1,21 @@
-import tensorflow as tf
 import numpy as np
-
-from keras import layers, models, optimizers
-from keras import backend as K
-import keras
-
-from ipdb import set_trace as debug
-
-np.random.seed(37)
-tf.set_random_seed(43)  # reproducible
-
-import keras.backend as K
 
 from .actor import Actor
 from .critic import Critic
+from .utils import ReplayBuffer
+
 
 class DDPG:
-    """ Deep Deterministic Policy Gradient (DDPG) Helper Class
-    """
-
-    def __init__(self, env, buffer_size = 20000, batch_size=96,
-                 gamma = 0.99, lr = 0.00005, tau = 0.001):
+    def __init__(self, env, buffer_size=20000, batch_size=96,
+                 gamma=0.99, lr=0.00005, tau=0.001):
         """ Initialization
         """
         # Environment and A2C parameters
 
-        self.state_size = env.observation_space.shape
-        self.action_size = env.action_space.shape
-        self.action_high = env.action_space.high
-        self.action_low = env.action_space.low
+        self.state_size = (env.state_size,)
+        self.action_size = (env.action_size,)
+        self.action_high = env.action_high
+        self.action_low = env.action_low
         self.action_range = self.action_high - self.action_low
 
         self.gamma = gamma
