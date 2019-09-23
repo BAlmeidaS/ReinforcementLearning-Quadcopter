@@ -2,12 +2,13 @@ import numpy as np
 
 from .actor import Actor
 from .critic import Critic
-from .utils import ReplayBuffer
+from .utils import ReplayBuffer, OUNoise
 
 
 class DDPG:
-    def __init__(self, env, buffer_size=20000, batch_size=96,
-                 gamma=0.99, lr=0.00005, tau=0.001):
+    def __init__(self, env, buffer_size=20000, batch_size=96, reg=1e-2,
+                 gamma=0.99, lr=0.00005, tau=0.001,
+                 no_mu=.1, no_theta=.2, no_sigma=0.25):
         """ Initialization
         """
         # Environment and A2C parameters
@@ -21,15 +22,23 @@ class DDPG:
         self.gamma = gamma
         self.lr = lr
         # Create actor and critic networks
-        self.actor = Actor(env, 0.1 * lr, tau)
-        self.critic = Critic(env, lr, tau)
+        self.actor = Actor(env, 0.1 * lr, tau, reg)
+        self.critic = Critic(env, lr, tau, reg)
 
         self.batch_size = batch_size
         self.memory = ReplayBuffer(buffer_size, batch_size)
 
+        self.noise = OUNoise(self.action_size,
+                             no_mu,
+                             no_theta,
+                             no_sigma)
+
+    def reset_episode(self):
+        self.noise.reset()
+
     def act(self, state):
         self.last_state = state
-        return self.actor.predict(state)
+        return self.actor.predict(state) + self.noise.sample()
 
     def step(self, action, reward, next_state, done):
         self.memory.add(self.last_state,

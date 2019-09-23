@@ -1,12 +1,12 @@
 import numpy as np
 
-from keras import layers, models, optimizers
+from keras import layers, models, optimizers, regularizers
 from keras import backend as K
 import keras
 
 
 class Actor():
-    def __init__(self, env, lr=0.0001, tau=0.001):
+    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2):
         self.env = env
 
         self.state_size = (env.state_size,)
@@ -17,6 +17,7 @@ class Actor():
 
         self.lr = lr
         self.tau = tau
+        self.reg = reg
 
         self.model, output_layer = self.build_network()
         self.target_model, _ = self.build_network()
@@ -43,19 +44,29 @@ class Actor():
 
         layer_1 = layers.Dense(
             units=256,
-            activation='relu'
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
         )(states)
-        layer_1 = layers.GaussianNoise(1.0)(layer_1)
+        layer_1 = layers.GaussianNoise(.1)(layer_1)
 
         layer_2 = layers.Dense(
-            units=128,
-            activation='relu'
+            units=256,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
         )(layer_1)
-        layer_2 = layers.GaussianNoise(1.0)(layer_2)
+        layer_2 = layers.GaussianNoise(.1)(layer_2)
+
+        layer_3 = layers.Dense(
+            units=256,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
+        )(layer_2)
+        layer_3 = layers.GaussianNoise(.1)(layer_3)
 
         output = layers.Dense(self.action_size[0],
                               activation='tanh',
-                              kernel_initializer=keras.initializers.RandomUniform())(layer_2)
+                              kernel_initializer=keras.initializers.RandomUniform(minval=-5e-2,
+                                                                                  maxval=5e-2))(layer_3)
         output = layers.Lambda(lambda i: i * self.action_range)(output)
 
         return models.Model(inputs=[states], outputs=[output]), output

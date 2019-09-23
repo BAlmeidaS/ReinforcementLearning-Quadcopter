@@ -1,12 +1,12 @@
 import numpy as np
 
-from keras import layers, models, optimizers
+from keras import layers, models, optimizers, regularizers
 from keras import backend as K
 import keras
 
 
 class Critic():
-    def __init__(self, env, lr=0.0001, tau=0.001):
+    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2):
         self.env = env
 
         self.state_size = (env.state_size,)
@@ -17,6 +17,7 @@ class Critic():
 
         self.lr = lr
         self.tau = tau
+        self.reg = reg
 
         self.model = self.build_network()
         self.target_model = self.build_network()
@@ -32,21 +33,30 @@ class Critic():
 
         layer_1 = layers.Dense(
             units=256,
-            activation='relu'
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
         )(states)
 
         layer_2 = layers.concatenate([layer_1, actions])
 
         layer_3 = layers.Dense(
-            units=128,
-            activation='relu'
+            units=256,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
         )(layer_2)
+
+        layer_4 = layers.Dense(
+            units=256,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(self.reg)
+        )(layer_3)
 
         output = layers.Dense(
             units=1,
             activation='linear',
-            kernel_initializer=keras.initializers.RandomUniform()
-        )(layer_3)
+            kernel_initializer=keras.initializers.RandomUniform(minval=-5e-2,
+                                                                maxval=5e-2)
+        )(layer_4)
 
         model = models.Model(inputs=[states, actions], outputs=output)
 
