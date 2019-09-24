@@ -25,7 +25,7 @@ class ScoreEvaluator:
         self._update_avg()
         self.last_score = score
 
-    def plot_avg_scores(self):
+    def plot_avg_scores(self, path=None):
         plt.plot(np.linspace(0,
                              len(self.avg_scores),
                              len(self.avg_scores),
@@ -40,7 +40,10 @@ class ScoreEvaluator:
 
         plt.plot(rolling_mean)
 
-        plt.show()
+        if path:
+            plt.savefig(path)
+        else:
+            plt.show()
 
     def _update_avg(self):
         if len(self.tmp_scores) < self.tmp_scores.maxlen:
