@@ -95,3 +95,13 @@ class DDPG:
 
         self.actor.transfer_learning()
         self.critic.transfer_learning()
+
+    def save_weights(self, path):
+        path = 'weights/' + path + '_DDPG'
+        self.actor.save(path)
+        self.critic.save(path)
+
+    def load_weights(self, path):
+        path = 'weights/' + path + '_DDPG'
+        self.critic.load_weights(path)
+        self.actor.load_weights(path)
