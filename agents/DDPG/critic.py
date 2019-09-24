@@ -6,7 +6,7 @@ import keras
 
 
 class Critic():
-    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2):
+    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2, num_nodes=200):
         self.env = env
 
         self.state_size = (env.state_size,)
@@ -18,6 +18,7 @@ class Critic():
         self.lr = lr
         self.tau = tau
         self.reg = reg
+        self.num_nodes = num_nodes
 
         self.model = self.build_network()
         self.target_model = self.build_network()
@@ -32,7 +33,7 @@ class Critic():
         actions = layers.Input(shape=self.action_size, name='actions')
 
         layer_1 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(states)
@@ -40,13 +41,13 @@ class Critic():
         layer_2 = layers.concatenate([layer_1, actions])
 
         layer_3 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(layer_2)
 
         layer_4 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(layer_3)

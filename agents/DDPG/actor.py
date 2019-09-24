@@ -6,7 +6,7 @@ import keras
 
 
 class Actor():
-    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2):
+    def __init__(self, env, lr=0.0001, tau=0.001, reg=1e-2, num_nodes=200):
         self.env = env
 
         self.state_size = (env.state_size,)
@@ -18,6 +18,7 @@ class Actor():
         self.lr = lr
         self.tau = tau
         self.reg = reg
+        self.num_nodes = num_nodes
 
         self.model, output_layer = self.build_network()
         self.target_model, _ = self.build_network()
@@ -43,21 +44,21 @@ class Actor():
         states = layers.Input(shape=self.state_size, name='states')
 
         layer_1 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(states)
         layer_1 = layers.GaussianNoise(.1)(layer_1)
 
         layer_2 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(layer_1)
         layer_2 = layers.GaussianNoise(.1)(layer_2)
 
         layer_3 = layers.Dense(
-            units=256,
+            units=self.num_nodes,
             activation='relu',
             kernel_regularizer=regularizers.l2(self.reg)
         )(layer_2)

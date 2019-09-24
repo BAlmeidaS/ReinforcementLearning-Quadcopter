@@ -6,7 +6,8 @@ from .utils import ReplayBuffer, OUNoise
 
 
 class DDPG:
-    def __init__(self, env, buffer_size=20000, batch_size=96, reg=1e-2,
+    def __init__(self, env, buffer_size=20000, batch_size=96,
+                 reg=1e-2, num_nodes=200,
                  gamma=0.99, lr=0.00005, tau=0.001,
                  no_mu=.1, no_theta=.2, no_sigma=0.25):
         """ Initialization
@@ -22,8 +23,8 @@ class DDPG:
         self.gamma = gamma
         self.lr = lr
         # Create actor and critic networks
-        self.actor = Actor(env, 0.1 * lr, tau, reg)
-        self.critic = Critic(env, lr, tau, reg)
+        self.actor = Actor(env, 0.1 * lr, tau, reg, num_nodes)
+        self.critic = Critic(env, lr, tau, reg, num_nodes)
 
         self.batch_size = batch_size
         self.memory = ReplayBuffer(buffer_size, batch_size)
