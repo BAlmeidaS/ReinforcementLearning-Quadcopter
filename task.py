@@ -28,7 +28,11 @@ class Task():
 
     def get_reward(self):
         """Uses current pose of sim to return reward."""
-        reward = 1.-.003*(abs(self.sim.pose[:3] - self.target_pos)).sum()
+        # reward = 1.-.03*(abs(self.sim.pose[:3] - self.target_pos)).sum()
+        # reward = (-np.linalg.norm(self.sim.pose[:3] - self.target_pos)
+        #           -(abs(self.sim.v - [0, 0, 0])).sum())
+        reward = (1. - .03*(abs(self.sim.pose[:3] - self.target_pos)).sum()
+                     -(abs(self.sim.v - [0, 0, 0])).sum())
         return reward
 
     def state(self):
