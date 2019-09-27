@@ -15,8 +15,6 @@ from itertools import product
 
 import tensorflow as tf
 
-num_episodes = 2000
-
 init_pose = np.array([5., 5., 5., 0, 0., 0.])
 init_velocities = np.array([0., 0., 0.])
 init_angle_velocities = np.array([0., 0., 0.])
@@ -30,7 +28,6 @@ task = Task(init_pose,
             target_pos)
 
 best_score = -np.inf
-avg_scores = deque(maxlen=num_episodes)
 score_eval = ScoreEvaluator(1)
 
 
@@ -56,6 +53,8 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
 
     if not os.path.exists(folder):
         os.makedirs(folder)
+
+    num_episodes = 2000
 
     for i in range(num_episodes):
         state = task.reset()
