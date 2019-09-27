@@ -1,4 +1,3 @@
-from collections import deque
 from task import Task
 import numpy as np
 
@@ -14,6 +13,14 @@ import ray
 from itertools import product
 
 import tensorflow as tf
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('--num_of_cores', type=int,
+                    help='number of cores to be used')
+args = parser.parse_args()
+
+NUM_OF_CORES = args.num_of_cores
 
 init_pose = np.array([5., 5., 5., 0, 0., 0.])
 init_velocities = np.array([0., 0., 0.])
@@ -26,9 +33,6 @@ task = Task(init_pose,
             init_angle_velocities,
             runtime,
             target_pos)
-
-best_score = -np.inf
-score_eval = ScoreEvaluator(1)
 
 
 def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
@@ -48,6 +52,7 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
          'no_sigma': no_sigma}
 
     agent = DDPG(task, **d)
+    score_eval = ScoreEvaluator(window=50)
 
     folder = f'weights/{uuid}/'
 
@@ -82,11 +87,11 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
 
 @ray.remote
 def grid_search(x, total):
-    regs = np.array([1, .9, 1e-1, 1e-2])
-    num_nodess = np.array([64, 128, 256, 512, 32])
+    regs = np.array([1, 1e-1])
+    num_nodess = np.array([256, 32, 128, 64])
     gammas = np.array([0.99])
-    lrs = np.array([1e-3, 1e-4, 1e-5])
-    taus = np.array([1e-3, 1e-4])
+    lrs = np.array([1e-3, 1e-4])
+    taus = np.array([1e-3])
     no_mus = np.array([0])
     no_thetas = np.array([.15])
     no_sigmas = np.array([.3])
@@ -127,7 +132,7 @@ def grid_search(x, total):
 def parallel():
     ray.init()
     try:
-        futures = [grid_search.remote(i, 8) for i in range(8)]
+        futures = [grid_search.remote(i, NUM_OF_CORES) for i in range(NUM_OF_CORES)]
         ray.get(futures)
     finally:
         ray.shutdown()
