@@ -25,7 +25,7 @@ NUM_OF_CORES = args.num_of_cores
 init_pose = np.array([5., 5., 5., 0, 0., 0.])
 init_velocities = np.array([0., 0., 0.])
 init_angle_velocities = np.array([0., 0., 0.])
-runtime = 5.
+runtime = 10.
 target_pos = np.array([10., 10., 30.])
 
 task = Task(init_pose,
@@ -88,9 +88,9 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
 @ray.remote
 def grid_search(x, total):
     regs = np.array([1, 1e-1])
-    num_nodess = np.array([256, 32, 128, 64])
+    num_nodess = np.array([512, 256, 128, 64])
     gammas = np.array([0.99])
-    lrs = np.array([1e-3, 1e-4])
+    lrs = np.array([1e-3])
     taus = np.array([1e-3])
     no_mus = np.array([0])
     no_thetas = np.array([.15])
