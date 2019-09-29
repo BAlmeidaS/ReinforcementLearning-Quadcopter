@@ -2,7 +2,8 @@ import numpy as np
 
 from .actor import Actor
 from .critic import Critic
-from .utils import ReplayBuffer, OUNoise
+from .replay_buffer import ReplayBuffer
+from .ou_noise import OUNoise
 
 
 class DDPG:
