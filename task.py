@@ -16,7 +16,7 @@ class Task():
         """
         # Simulation
         self.sim = PhysicsSim(init_pose, init_velocities, init_angle_velocities, runtime)
-        self.action_repeat = 3
+        self.action_repeat = 1
 
         self.state_size = self.action_repeat * self.state().shape[0]
         self.action_low = 0
@@ -31,8 +31,8 @@ class Task():
         # reward = 1.-.03*(abs(self.sim.pose[:3] - self.target_pos)).sum()
         # reward = (-np.linalg.norm(self.sim.pose[:3] - self.target_pos)
         #           -(abs(self.sim.v - [0, 0, 0])).sum())
-        reward = (1. - .003*(abs(self.sim.pose[:3] - self.target_pos)).sum()
-                     -.0003*(abs(self.sim.v - [0, 0, 0])).sum())
+        reward = (1. - .003*(np.absolute(self.sim.pose[:3] - self.target_pos)).sum()
+                     -.0003*(np.absolute(self.sim.v - [0, 0, 0])).sum())
         return reward
 
     def state(self):
