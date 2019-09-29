@@ -14,6 +14,8 @@ I have also created a grid search file useful to find the best hyperparameters u
 
 Last but not least, we have a Jupyter Notebook which gives a full context and the full exploration of the problem called `QuadcopterProject.ipynb`. If you come here from somewhere, I hope you enjoy to meet this challenge with my solution =].
 
+The final notebook could be read in [here](http://htmlpreview.github.io/?https://github.com/BAlmeidaS/ReinforcementLearning-Quadcopter/blob/master/quadcopter_project.html)
+
 ## Project Instructions
 
 1. Clone the repository and navigate to the downloaded folder.
