@@ -59,7 +59,7 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    num_episodes = 2000
+    num_episodes = 1000
 
     for i in range(num_episodes):
         state = task.reset()
@@ -87,8 +87,8 @@ def train_a_batch(uuid, reg=1, num_nodes=100, gamma=0.99, lr=1e-4,
 
 @ray.remote
 def grid_search(x, total):
-    regs = np.array([1, 1e-1])
-    num_nodess = np.array([512, 256, 128, 64])
+    regs = np.array([.9, 1e-1])
+    num_nodess = np.array([256, 128, 64])
     gammas = np.array([0.99])
     lrs = np.array([1e-3])
     taus = np.array([1e-3])
