@@ -1,11 +1,15 @@
 import json
 
 from .agent import DDPG
+import os
 
+REF_PATH = os.path.dirname(__file__)
 
 def load_agent(task, folder, uuid):
     """Load the weights from an agent previously trained"""
-    path = f'{folder}/{uuid}/'
+    path = REF_PATH + f'/../../{folder}/{uuid}/'
+
+#    import ipdb; ipdb.set_trace()
 
     with open(path + 'params.json', 'r') as f:
         params = json.load(f)
@@ -15,6 +19,6 @@ def load_agent(task, folder, uuid):
 
     # loading the agent
     agent = DDPG(task, **params)
-    agent.load_weights(folder + 'weights')
+    agent.load_weights(path + 'weights')
 
     return agent
