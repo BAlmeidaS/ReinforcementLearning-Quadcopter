@@ -9,8 +9,6 @@ def load_agent(task, folder, uuid):
     """Load the weights from an agent previously trained"""
     path = REF_PATH + f'/../../{folder}/{uuid}/'
 
-#    import ipdb; ipdb.set_trace()
-
     with open(path + 'params.json', 'r') as f:
         params = json.load(f)
 
